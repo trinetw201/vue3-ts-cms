@@ -4,10 +4,10 @@ export interface SearchFormItem {
   label: string
   initialValue?: string | undefined
   placeholder?: string | undefined
-  option?: selectOption[]
+  option?: SelectOption[]
 }
 
-export interface selectOption {
+export interface SelectOption {
   label: string
   value: number | string | undefined
 }

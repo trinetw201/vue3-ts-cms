@@ -1,12 +1,16 @@
-enum elTableColumnType {
-  "default",
-  "selection",
-  "index",
-  "expand",
+import type { TableColumnItemType } from "@/views/main/system/department/config/pageContentConfig"
+
+export interface PageContentConfig {
+  header?: {
+    title?: string
+    btnTitle: string
+  }
+  tableColumn?: TableColumnItem[]
 }
 
-export interface tableColumnItem {
-  type?: elTableColumnType
+export interface TableColumnItem {
+  type?: TableColumnItemType
   label: string
   prop?: string
+  width?: string
 }

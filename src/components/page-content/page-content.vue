@@ -1,16 +1,18 @@
 <template>
   <div class="page-content">
     <div class="top">
-      <h2 class="title">用戶列表</h2>
-      <el-button type="primary" @click="handleInsertClick">新增用戶</el-button>
+      <h2 class="title">{{ props.pageContentConfig.header?.title ?? "列表" }}</h2>
+      <el-button type="primary" @click="handleInsertClick">{{
+        props.pageContentConfig.header?.btnTitle ?? "新增"
+      }}</el-button>
     </div>
     <div class="table">
       <el-table v-loading="loading" :data="pageList" border style="width: 100%">
-        <el-table-column align="center" type="index" label="序號" width="55" />
-        <el-table-column align="center" prop="name" label="部門名稱" width="100" />
-        <el-table-column align="center" prop="leader" label="部門主管" width="100" />
-        <el-table-column align="center" prop="parentId" label="上級部門" width="100" />
-        <el-table-column align="center" label="創建時間">
+        <template v-for="item in props.pageContentConfig.tableColumn" :key="item.prop">
+          <el-table-column align="center" v-bind="item" />
+        </template>
+
+        <!-- <el-table-column align="center" label="創建時間">
           <template #default="scope">
             {{ new Date(scope.row.createAt).toLocaleString("zh-TW") }}
           </template>
@@ -39,7 +41,7 @@
               >刪除</el-button
             >
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
     </div>
     <div class="pagination">
@@ -66,6 +68,11 @@ import { ElMessage, ElMessageBox } from "element-plus"
 import { storeToRefs } from "pinia"
 import { ref } from "vue"
 import type { UserItem } from "@/types/main/system/system"
+import type { PageContentConfig } from "./page-content"
+
+const props = defineProps<{
+  pageContentConfig: PageContentConfig
+}>()
 
 const useSystem = useSystemStore()
 const emit = defineEmits(["insertClick", "editClick"])

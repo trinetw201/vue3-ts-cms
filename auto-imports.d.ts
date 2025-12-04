@@ -6,5 +6,8 @@
 // biome-ignore lint: disable
 export {}
 declare global {
-
+  const ElTableColumnItemType2: typeof import('element-plus/es')['ElTableColumnItemType2']
+  const ElTableColumnItemTypea2: typeof import('element-plus/es')['ElTableColumnItemTypea2']
+  const ElTableColumnType: typeof import('element-plus/es')['ElTableColumnType']
+  const ElTableColumnType2: typeof import('element-plus/es')['ElTableColumnType2']
 }
