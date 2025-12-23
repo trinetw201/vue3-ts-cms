@@ -2,7 +2,7 @@
   <div class="page-search">
     <el-form :model="searchForm" ref="formRef" label-width="80px" size="large">
       <el-row :gutter="20">
-        <template v-for="formItem in searchFormItem" :key="formItem.prop">
+        <template v-for="formItem in pageSearchConfig.searchFormItem" :key="formItem.prop">
           <template v-if="formItem.type === 'input'">
             <el-col :span="8">
               <el-form-item :label="formItem.label" :prop="formItem.prop">
@@ -46,14 +46,14 @@ import { ElConfigProvider, ElForm } from "element-plus"
 import zhTw from "element-plus/es/locale/lang/zh-tw"
 import { Search, RefreshRight } from "@element-plus/icons-vue"
 import { reactive, ref } from "vue"
-import type { SearchForm, SearchFormItem } from "./page-search"
+import type { PageSearchConfig, SearchForm } from "./page-search"
 
 const props = defineProps<{
-  searchFormItem: SearchFormItem[]
+  pageSearchConfig: PageSearchConfig
 }>()
 
 const initialForm: SearchForm = {}
-for (const value of props.searchFormItem) {
+for (const value of props.pageSearchConfig.searchFormItem) {
   initialForm[value.prop] = value.initialValue ?? undefined
 }
 const searchForm = reactive<SearchForm>(initialForm)
@@ -63,12 +63,12 @@ const formRef = ref<InstanceType<typeof ElForm>>()
 const emit = defineEmits(["queryClick", "resetClick"])
 
 function handleQueryForm() {
-  emit("queryClick", searchForm)
+  emit("queryClick", props.pageSearchConfig.pageName, searchForm)
 }
 
 function handleResetForm() {
   formRef.value?.resetFields()
-  emit("resetClick")
+  emit("resetClick", props.pageSearchConfig.pageName)
 }
 </script>
 

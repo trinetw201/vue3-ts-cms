@@ -9,19 +9,17 @@
     <div class="table">
       <el-table v-loading="loading" :data="pageList" border style="width: 100%">
         <template v-for="item in props.pageContentConfig.tableColumn" :key="item.prop">
-          <el-table-column align="center" v-bind="item" />
+          <template v-if="item.type === TableColumnItemType.default">
+            <el-table-column align="center" v-bind="item" />
+          </template>
+          <template v-if="item.type === TableColumnItemType.date">
+            <el-table-column align="center" v-bind="item">
+              <template #default="scope">
+                <slot :name="item.prop" v-bind="scope" />
+              </template>
+            </el-table-column>
+          </template>
         </template>
-
-        <!-- <el-table-column align="center" label="創建時間">
-          <template #default="scope">
-            {{ new Date(scope.row.createAt).toLocaleString("zh-TW") }}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="更新時間">
-          <template #default="scope">
-            {{ new Date(scope.row.updateAt).toLocaleString("zh-TW") }}
-          </template>
-        </el-table-column>
         <el-table-column align="center" label="操作" width="150">
           <template #default="scope">
             <el-button
@@ -41,7 +39,7 @@
               >刪除</el-button
             >
           </template>
-        </el-table-column> -->
+        </el-table-column>
       </el-table>
     </div>
     <div class="pagination">
@@ -69,6 +67,7 @@ import { storeToRefs } from "pinia"
 import { ref } from "vue"
 import type { UserItem } from "@/types/main/system/system"
 import type { PageContentConfig } from "./page-content"
+import { TableColumnItemType } from "@/views/main/system/department/config/pageContentConfig"
 
 const props = defineProps<{
   pageContentConfig: PageContentConfig
@@ -80,31 +79,31 @@ const loading = ref(true)
 //分頁
 const currentPage = ref(1)
 const pageSize = ref(10)
-fecthPageList()
+fecthPageList(props.pageContentConfig.pageName)
 
 const { pageList, totalCount } = storeToRefs(useSystem)
 
 function handleSizeChange() {
-  fecthPageList()
+  fecthPageList(props.pageContentConfig.pageName)
 }
 function handleCurrentChange() {
-  fecthPageList()
+  fecthPageList(props.pageContentConfig.pageName)
 }
 
-function fecthPageList(queryInfo: any = []) {
+function fecthPageList(pageName: string, queryInfo: any = []) {
   loading.value = true
   const size = pageSize.value
   const offset = (currentPage.value - 1) * size
   const pageInfo = { size, offset }
   const query = { ...pageInfo, ...queryInfo }
-  useSystem.postPageListAction("department", query).finally(() => {
+  useSystem.postPageListAction(pageName, query).finally(() => {
     loading.value = false
   })
 }
 
 //點擊事件
 function handleInsertClick() {
-  emit("insertClick")
+  emit("insertClick", props.pageContentConfig.pageName)
 }
 
 //刪除事件
@@ -113,7 +112,7 @@ function handleDelete(id: number) {
     confirmButtonText: "確定",
     cancelButtonText: "取消",
   }).then(() => {
-    useSystem.deletePageAction("department", id).then((res) => {
+    useSystem.deletePageAction(props.pageContentConfig.pageName, id).then((res) => {
       if (res) {
         ElMessage({
           message: "刪除成功",
@@ -128,7 +127,7 @@ function handleDelete(id: number) {
 
 //編輯事件
 function handleEditUser(userItem: UserItem) {
-  emit("editClick", userItem)
+  emit("editClick", props.pageContentConfig.pageName, userItem)
 }
 
 defineExpose({ fecthPageList })

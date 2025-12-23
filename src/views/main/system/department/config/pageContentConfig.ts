@@ -6,9 +6,11 @@ export enum TableColumnItemType {
   index = "index",
   expand = "expand",
   date = "date",
+  custom = "custom",
 }
 
 export const pageContentConfig: PageContentConfig = {
+  pageName: "department",
   header: {
     title: "部門列表",
     btnTitle: "新增部門",
@@ -36,6 +38,16 @@ export const pageContentConfig: PageContentConfig = {
       prop: "parentId",
       label: "上級部門",
       width: "100",
+    },
+    {
+      type: TableColumnItemType.date,
+      prop: "createAt",
+      label: "創建時間",
+    },
+    {
+      type: TableColumnItemType.date,
+      prop: "updateAt",
+      label: "更新時間",
     },
   ],
 }

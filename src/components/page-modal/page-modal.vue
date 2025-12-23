@@ -1,6 +1,11 @@
 <template>
   <div class="page-modal">
-    <el-dialog v-model="dialogVisible" :title="isEdit ? '編輯部門' : '新增部門'" width="40%" center>
+    <el-dialog
+      v-model="dialogVisible"
+      :title="isEdit ? `編輯${pageModalConfig.title}` : `新增${pageModalConfig.title}`"
+      width="40%"
+      center
+    >
       <div class="form">
         <el-form ref="formRef" :model="formData" size="large">
           <el-form-item label="部門名稱" prop="name" label-width="100px">
@@ -41,14 +46,20 @@ import useSystemStore from "@/store/main/system/system"
 import { ElMessage, type FormInstance } from "element-plus"
 import type { Department } from "@/types/login"
 import { reactive, ref } from "vue"
+import type { ModalForm, PageModalConfig } from "@/components/page-modal/page-modal"
+
+const props = defineProps<{
+  pageModalConfig: PageModalConfig
+}>()
 
 const dialogVisible = ref(false)
+const initialForm: ModalForm = {}
+for (const value of props.pageModalConfig.insertForms) {
+  initialForm[value.prop] = value.initialValue ?? undefined
+}
 const formRef = ref<FormInstance>()
-const formData = reactive({
-  name: "",
-  leader: "",
-  parentId: undefined as undefined | number,
-})
+const formData = reactive(initialForm)
+
 const departmentList = ref<Department[] | null>()
 const useSystem = useSystemStore()
 const isEdit = ref(false)

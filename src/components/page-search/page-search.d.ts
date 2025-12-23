@@ -1,3 +1,8 @@
+export interface PageSearchConfig {
+  pageName: string
+  searchFormItem: SearchFormItem[]
+}
+
 export interface SearchFormItem {
   type: string
   prop: string
